@@ -1,0 +1,76 @@
+---
+import CustomContainer from "@/components/common/CustomContainer.astro";
+import SubTitle from "@/components/common/SubTitle.astro";
+import { Icon } from "astro-icon/components";
+import { Code } from "astro:components";
+import { useTranslations } from "@/i18n/utils";
+
+interface Props {
+  lang?: "es" | "en" | "fr" | "it" | "pt" | "pt-BR" | "ja" | "ko";
+}
+
+const { lang = "es" } = Astro.props;
+const t = useTranslations(lang);
+
+const codeExample = `import { TRANSACTIONAL_ACTIONS } from 'google-react-recaptcha-v3';
+
+// ${t("api.transactional.actions.comment")}:
+console.log(TRANSACTIONAL_ACTIONS);
+// ${t("api.factory.actions")}`;
+---
+
+<section class="space-y-6 max-w-5xl">
+  <SubTitle title={t("api.transactional.actions.title")} />
+  <CustomContainer class="px-6 py-3 max-w-5xl">
+    <div class="flex items-center gap-4 justify-between mb-6">
+      <div class="flex items-center gap-2">
+        <div class="h-5 w-5 rounded-full bg-[#FF4444]"></div>
+        <div class="h-5 w-5 rounded-full bg-[#F4FF5C]"></div>
+        <div class="h-5 w-5 rounded-full bg-[#45FF42]"></div>
+      </div>
+      <button
+        type="button"
+        id="copyCodeBtn7"
+        class="text-white50 hover:text-white70 cursor-pointer transition-colors"
+        title={t("ui.copy.code")}
+      >
+        <Icon name="mdi:content-copy" size={24} />
+      </button>
+    </div>
+    <Code
+      code={codeExample}
+      lang="tsx"
+      theme="dracula"
+      class="code-transparent"
+    />
+  </CustomContainer>
+</section>
+
+<script is:inline define:vars={{ codeExample }}>
+  const copyBtn = document.getElementById("copyCodeBtn7");
+
+  copyBtn?.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(codeExample);
+
+      // Feedback visual - Cambiar a icono de check
+      const originalInnerHTML = copyBtn.innerHTML;
+      copyBtn.innerHTML =
+        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg>';
+      copyBtn.classList.add("text-green-400");
+
+      setTimeout(() => {
+        copyBtn.innerHTML = originalInnerHTML;
+        copyBtn.classList.remove("text-green-400");
+      }, 2000);
+    } catch (err) {
+      console.error("Error al copiar:", err);
+
+      // Feedback de error
+      copyBtn.classList.add("text-red-400");
+      setTimeout(() => {
+        copyBtn.classList.remove("text-red-400");
+      }, 2000);
+    }
+  });
+</script>

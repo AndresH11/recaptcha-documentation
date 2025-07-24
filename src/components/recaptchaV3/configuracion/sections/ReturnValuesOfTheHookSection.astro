@@ -1,0 +1,21 @@
+---
+import SubTitle from "@/components/common/SubTitle.astro";
+import Table from "@/components/common/table/Table.astro";
+import TableRow from "@/components/common/table/TableRow.astro";
+import { RETURN_VALUES_OF_THE_HOOK } from "@/constants/recaptchaV3/configurationPage/returnValuesOfTheHook";
+---
+
+<section class="space-y-6 max-w-5xl">
+  <SubTitle title="Valores de Retorno del Hook" />
+  <Table headers={["Propiedad", "tipo", "Descripción"]}>
+    {
+      RETURN_VALUES_OF_THE_HOOK.map((item) => (
+        <tr>
+          <TableRow>{item.prop}</TableRow>
+          <TableRow>{item.type}</TableRow>
+          <TableRow>{item.description}</TableRow>
+        </tr>
+      ))
+    }
+  </Table>
+</section>

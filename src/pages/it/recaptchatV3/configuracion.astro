@@ -1,0 +1,33 @@
+---
+import TitlePage from "@/components/common/TitlePage.astro";
+import Layout from "@/layouts/Layout.astro";
+import { type Props } from "@/components/common/PropsTable.astro";
+import PropsOfTheRecaptchaV3ComponentSection from "@/components/recaptchaV3/configuracion/sections/PropsOfTheRecaptchaV3ComponentSection.astro";
+import BaseConfigurationExampleSection from "@/components/recaptchaV3/configuracion/sections/BaseConfigurationExampleSection.astro";
+import OptionsoftheHookuseRecaptchaSection from "@/components/recaptchaV3/configuracion/sections/OptionsoftheHookuseRecaptchaSection.astro";
+import ReturnValuesOfTheHookSection from "@/components/recaptchaV3/configuracion/sections/ReturnValuesOfTheHookSection.astro";
+import ExampleReturnHookSection from "@/components/recaptchaV3/configuracion/sections/ExampleReturnHookSection.astro";
+import { useTranslations } from "@/i18n/utils";
+
+const t = useTranslations("it");
+---
+
+<Layout
+  titleKey="page.configuration.title"
+  descriptionKey="seo.description"
+  keywords={t("seo.keywords")}
+  image="/og-image.jpg"
+  publishDate="2025-01-01"
+  modifiedDate="2025-01-01"
+  type="website"
+  twitterHandle="@AndresH11"
+>
+  <main class="py-14 px-6 md:px-12 space-y-11">
+    <TitlePage title={t("nav.configuration")} />
+    <PropsOfTheRecaptchaV3ComponentSection lang="it" />
+    <BaseConfigurationExampleSection lang="it" />
+    <OptionsoftheHookuseRecaptchaSection lang="it" />
+    <ReturnValuesOfTheHookSection lang="it" />
+    <ExampleReturnHookSection lang="it" />
+  </main>
+</Layout>

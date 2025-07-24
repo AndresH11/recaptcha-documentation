@@ -1,0 +1,69 @@
+---
+import TitlePage from "@/components/common/TitlePage.astro";
+import CustomContainer from "@/components/common/CustomContainer.astro";
+import Button from "@/components/common/Button.astro";
+import { Icon } from "astro-icon/components";
+import Layout from "@/layouts/Layout.astro";
+import { useTranslations } from "@/i18n/utils";
+
+const t = useTranslations("ko");
+---
+
+<Layout titleKey="page.introduction.title" descriptionKey="seo.description">
+  <main class="py-14 px-6 md:px-12 space-y-11">
+    <TitlePage title={t("nav.introduction")} />
+    <CustomContainer
+      class="text-base xl:text-lg 2xl:text-xl text-white50 px-6 py-8"
+    >
+      <p>
+        {t("intro.description")}
+        <a
+          href="https://www.linkedin.com/in/andresh11/"
+          rel="noopener noreferrer"
+          target="_blank"
+          class="font-bold hover:underline">{t("intro.author.link")}</a
+        >.
+      </p>
+    </CustomContainer>
+    <section
+      class="space-y-11 md:grid md:grid-cols-2 md:justify-between text-base xl:text-lg 2xl:text-xl text-white70 md:gap-4 h-fit"
+    >
+      <div class="space-y-4">
+        <h2 class="font-bold">{t("learn.recaptcha-v2.title")}</h2>
+        <CustomContainer class="px-6 py-8 xl:max-h-60 xl:h-full text-white50">
+          <ul class="list-disc list-inside space-y-2 text-sm 2xl:text-base">
+            <li>
+              양식에 "나는 로봇이 아닙니다" 체크박스 구성 요소를 통합하는 방법.
+            </li>
+            <li>이미지로 시각적 도전 구현.</li>
+            <li>기본 설정 및 토큰 검증.</li>
+            <li>연락처 양식 보호를 위한 실제 예시.</li>
+            <li>google-react-recaptcha-v2 패키지 사용.</li>
+          </ul>
+        </CustomContainer>
+      </div>
+
+      <div class="space-y-4">
+        <h2 class="font-bold">{t("learn.recaptcha-v3.title")}</h2>
+        <CustomContainer class="px-6 py-8 xl:max-h-60 xl:h-full text-white50">
+          <ul class="list-disc list-inside space-y-2 text-sm 2xl:text-base">
+            <li>라이브러리의 초기 설치 및 구성.</li>
+            <li>useRecaptcha 훅과 그 구성 옵션 사용.</li>
+            <li>TypeScript와 모든 인터페이스로 구현.</li>
+            <li>고급 구성: Trusted Types, CSP 및 다중 언어.</li>
+            <li>완전한 API: 서비스, 유틸리티 및 사전 정의된 상수.</li>
+            <li>일반적인 오류 처리 및 복구 전략.</li>
+            <li>실제 예시: 연락처 양식, 체크아웃 및 분석.</li>
+          </ul>
+        </CustomContainer>
+      </div>
+    </section>
+    <section class="flex items-center justify-end">
+      <Button>
+        {t("intro.next.button")}
+        <Icon name="mdi:arrow-right-thick" size={20} />
+      </Button>
+    </section>
+  </main>
+</Layout>
+

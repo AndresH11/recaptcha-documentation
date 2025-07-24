@@ -1,0 +1,86 @@
+---
+import Search from "@/components/header/Search.astro";
+import SelectLanguage from "@/components/header/SelectLanguage.astro";
+import { Icon } from "astro-icon/components";
+---
+
+<header
+  class="h-14 sm:h-16 2xl:h-24 ml-0 lg:ml-64 2xl:ml-80 bg-customBlack flex items-center justify-between px-3 sm:px-5 shadow-white/25 shadow-sm relative z-30"
+>
+  <div class="flex items-center gap-x-2 sm:gap-x-3 flex-1 min-w-0">
+    <!-- Botón de menú hamburguesa para móviles -->
+    <button
+      id="mobile-menu-button"
+      class="lg:hidden text-white50 hover:text-white70 p-2 rounded-md flex-shrink-0"
+      aria-label="Abrir menú de navegación"
+    >
+      <Icon name="mdi:menu" size={24} />
+    </button>
+
+    <!-- Buscador responsive -->
+    <div class="flex-1 min-w-0 max-w-2xl">
+      <Search />
+    </div>
+  </div>
+
+  <!-- Elementos del lado derecho -->
+  <div class="flex items-center gap-x-2 sm:gap-x-3 md:gap-x-5 flex-shrink-0">
+    <!-- GitHub link -->
+    <a
+      rel="noopener noreferrer"
+      target="_blank"
+      href="https://github.com/andresh11"
+      class="text-white50 hover:text-white70 p-2 rounded-md transition-colors duration-200"
+      aria-label="Ir a perfil de GitHub"
+    >
+      <Icon name="mdi:github" size={28} class="sm:w-8 sm:h-8 md:w-9 md:h-9" />
+    </a>
+
+    <!-- Selector de idioma -->
+    <SelectLanguage />
+  </div>
+</header>
+
+<script>
+  // Conectar el botón de menú hamburguesa con la función del AsideNav
+  const mobileMenuButton = document.getElementById("mobile-menu-button");
+
+  mobileMenuButton?.addEventListener("click", () => {
+    // Llamar a la función global openAsideNav
+    if (typeof (window as any).openAsideNav === "function") {
+      (window as any).openAsideNav();
+    }
+  });
+
+  // Función para ajustar el header en scroll (opcional)
+  let lastScrollY = window.scrollY;
+  const header = document.querySelector("header");
+
+  window.addEventListener("scroll", () => {
+    const currentScrollY = window.scrollY;
+
+    // Opcional: ocultar header al hacer scroll hacia abajo en móviles
+    if (window.innerWidth < 768) {
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        header?.classList.add("-translate-y-full");
+      } else {
+        header?.classList.remove("-translate-y-full");
+      }
+    }
+
+    lastScrollY = currentScrollY;
+  });
+
+  // Limpiar clases de scroll al cambiar a desktop
+  window.addEventListener("resize", () => {
+    if (window.innerWidth >= 768) {
+      header?.classList.remove("-translate-y-full");
+    }
+  });
+</script>
+
+<style>
+  header {
+    transition: transform 0.3s ease;
+  }
+</style>

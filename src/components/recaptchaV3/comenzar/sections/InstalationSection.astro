@@ -1,0 +1,134 @@
+---
+import CustomContainer from "@/components/common/CustomContainer.astro";
+import { Icon } from "astro-icon/components";
+
+const npm = `npm install google-react-recaptcha-v3`;
+const yarn = `yarn add google-react-recaptcha-v3`;
+const pnpm = `pnpm add google-react-recaptcha-v3`;
+---
+
+<div class="space-y-4">
+  <div
+    class="text-white50 font-bold text-base xl:text-lg 2xl:text-xl flex items-start gap-8"
+  >
+    <button
+      id="npm-btn"
+      class="cursor-pointer transition-all duration-200 hover:border-b-4 hover:border-white50 hover:text-white70 hover:scale-105 hover:-translate-y-1 border-b-4 border-transparent"
+      data-package="npm"
+    >
+      npm
+    </button>
+    <button
+      id="yarn-btn"
+      class="cursor-pointer transition-all duration-200 hover:border-b-4 hover:border-white50 hover:text-white70 hover:scale-105 hover:-translate-y-1 border-b-4 border-transparent"
+      data-package="yarn"
+    >
+      yarn
+    </button>
+    <button
+      id="pnpm-btn"
+      class="cursor-pointer transition-all duration-200 hover:border-b-4 hover:border-white50 hover:text-white70 hover:scale-105 hover:-translate-y-1 border-b-4 border-white50"
+      data-package="pnpm"
+    >
+      pnpm
+    </button>
+  </div>
+  <CustomContainer class="px-6 py-3 max-w-5xl h-32">
+    <div class="flex items-center gap-4 justify-between mb-6">
+      <div class="flex items-center gap-2">
+        <div class="h-5 w-5 rounded-full bg-[#FF4444]"></div>
+        <div class="h-5 w-5 rounded-full bg-[#F4FF5C]"></div>
+        <div class="h-5 w-5 rounded-full bg-[#45FF42]"></div>
+      </div>
+      <button
+        type="button"
+        id="copy-btn"
+        class="text-white50 hover:text-white70 cursor-pointer"
+      >
+        <Icon name="mdi:content-copy" size={24} />
+      </button>
+    </div>
+    <p
+      id="command-display"
+      class="text-base xl:text-lg 2xl:text-xl font-bold text-white"
+    >
+      <span id="package-manager" class="text-[#04FF7D]">pnpm</span>
+      <span id="package-action" class="text-[#F149E3]">add</span> google-react-recaptcha-v3
+    </p>
+  </CustomContainer>
+</div>
+
+<script is:inline define:vars={{ npm, yarn, pnpm }}>
+  const npmBtn = document.getElementById("npm-btn");
+  const yarnBtn = document.getElementById("yarn-btn");
+  const pnpmBtn = document.getElementById("pnpm-btn");
+  const copyBtn = document.getElementById("copy-btn");
+  const packageManager = document.getElementById("package-manager");
+  const packageAction = document.getElementById("package-action");
+
+  let currentCommand = pnpm;
+
+  // Función para actualizar el comando mostrado
+  function updateCommand(manager, action, command) {
+    packageManager.textContent = manager;
+    packageAction.textContent = action;
+    currentCommand = command;
+  }
+
+  // Función para actualizar el border activo
+  function updateActiveBorder(activeBtn) {
+    // Quitar border de todos los botones
+    npmBtn.classList.remove("border-white50");
+    npmBtn.classList.add("border-transparent");
+    yarnBtn.classList.remove("border-white50");
+    yarnBtn.classList.add("border-transparent");
+    pnpmBtn.classList.remove("border-white50");
+    pnpmBtn.classList.add("border-transparent");
+
+    // Añadir border al botón activo
+    activeBtn.classList.remove("border-transparent");
+    activeBtn.classList.add("border-white50");
+  }
+
+  // Event listeners para cambiar el comando
+  npmBtn.addEventListener("click", () => {
+    updateCommand("npm", "install", npm);
+    updateActiveBorder(npmBtn);
+  });
+
+  yarnBtn.addEventListener("click", () => {
+    updateCommand("yarn", "add", yarn);
+    updateActiveBorder(yarnBtn);
+  });
+
+  pnpmBtn.addEventListener("click", () => {
+    updateCommand("pnpm", "add", pnpm);
+    updateActiveBorder(pnpmBtn);
+  });
+
+  // Event listener para copiar
+  copyBtn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(currentCommand);
+
+      // Feedback visual - Cambiar a icono de check
+      const originalInnerHTML = copyBtn.innerHTML;
+      copyBtn.innerHTML =
+        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg>';
+      copyBtn.classList.add("text-green-400");
+
+      setTimeout(() => {
+        copyBtn.innerHTML = originalInnerHTML;
+        copyBtn.classList.remove("text-green-400");
+      }, 2000);
+    } catch (err) {
+      console.error("Error al copiar:", err);
+
+      // Feedback de error
+      copyBtn.classList.add("text-red-400");
+      setTimeout(() => {
+        copyBtn.classList.remove("text-red-400");
+      }, 2000);
+    }
+  });
+</script>

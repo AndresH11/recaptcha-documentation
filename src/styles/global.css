@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100..900&display=swap');
+@import "tailwindcss";
+@plugin 'tailwind-scrollbar';
+
+@theme {
+  --color-customBlack: #171717;
+  --color-customGray: #202124;
+  --color-white50: #FFFFFF80;
+  --color-white70: #FFFFFFB3;
+  --font-NotoSans: "Noto Sans",sans-serif;
+}
+
+
+.side-nav-content {
+	height: calc(100vh - 0.1em);
+}
+
+.code-transparent {
+  background: transparent !important;
+}
+.code-transparent pre {
+  background: transparent !important;
+}
+
+.scrollbar-hide {
+  /* Para navegadores webkit (Chrome, Safari, Edge) */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE y Edge */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Webkit browsers */
+}

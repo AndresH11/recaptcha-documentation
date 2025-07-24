@@ -1,0 +1,247 @@
+---
+import CustomContainer from "@/components/common/CustomContainer.astro";
+import SubTitle from "@/components/common/SubTitle.astro";
+import { Icon } from "astro-icon/components";
+import { Code } from "astro:components";
+import { useTranslations } from "@/i18n/utils";
+
+interface Props {
+  lang?: "es" | "en" | "fr" | "it" | "pt" | "pt-BR" | "ja" | "ko";
+}
+
+const { lang = "es" } = Astro.props;
+const t = useTranslations(lang);
+
+const codeExample = `import CustomContainer from "@/components/common/CustomContainer";
+import { type RecaptchaV3Ref, ReCaptchaV3 } from "google-react-recaptcha-v3";
+import { useRef, useState } from "react";
+
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+}
+
+export function CheckoutForm() {
+  const [console1, setConsole1] = useState("");
+  const [cart, setCart] = useState<CartItem[]>([
+    { id: "1", name: "${t("examples.products.premium")}", price: 29.99 },
+    { id: "2", name: "${t("examples.products.basic")}", price: 19.99 },
+    { id: "3", name: "${t("examples.products.deluxe")}", price: 49.99 },
+  ]);
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const recaptchaRef = useRef<RecaptchaV3Ref>(null);
+
+  const handlePayment = async () => {
+    setIsProcessing(true);
+
+    try {
+      // Obtener token justo antes del pago
+      const token = await recaptchaRef.current?.execute();
+
+      if (!token) {
+        throw new Error("${t("examples.checkout.security.error")}");
+      }
+
+      setConsole1(token);
+
+      // Procesar pago
+      const response = await fetch("/api/payments/process", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cart,
+          paymentMethod,
+          recaptchaToken: token,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert("${t("examples.checkout.success")}");
+        // window.location.href = "/checkout/success";
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (error) {
+      console.error("Error en pago:", error);
+      alert("${t("examples.checkout.error")}");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+  return (
+    <section className="max-w-5xl text-white50 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+      <CustomContainer className="px-6 py-3 max-w-[500px] lg:w-[450px] xl:w-[500px] space-y-4">
+        <div className="space-y-4">
+          <div className="flex items-center gap-4 justify-between">
+            <div className="flex items-center gap-2">
+              <div className="h-5 w-5 rounded-full bg-[#FF4444]"></div>
+              <div className="h-5 w-5 rounded-full bg-[#F4FF5C]"></div>
+              <div className="h-5 w-5 rounded-full bg-[#45FF42]"></div>
+            </div>
+          </div>
+
+          <h3 className="text-2xl text-white70 font-bold">
+            ${t("examples.checkout.title")}
+          </h3>
+
+          <div className="space-y-3">
+            <h4 className="text-lg text-white70 font-semibold">
+              ${t("examples.checkout.summary")}
+            </h4>
+            <div className="space-y-2">
+              {cart.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex justify-between items-center bg-white/10 rounded-lg px-3 py-2"
+                >
+                  <span className="text-white70 text-sm">{item.name}</span>
+                  <span className="text-white70 font-medium">
+                    \${item.price.toFixed(2)}
+                  </span>
+                </div>
+              ))}
+              <div className="flex justify-between items-center border-t border-white/20 pt-2">
+                <span className="text-white70 font-bold">${t("examples.checkout.total")}</span>
+                <span className="text-white70 font-bold">
+                  \${total.toFixed(2)}
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-white70 font-semibold">
+                ${t("examples.checkout.payment.method")}
+              </label>
+              <div className="space-y-2">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="credit"
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                  />
+                  <span className="text-white70 text-sm">${t("examples.checkout.payment.credit")}</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="debit"
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                  />
+                  <span className="text-white70 text-sm">${t("examples.checkout.payment.debit")}</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="paypal"
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                  />
+                  <span className="text-white70 text-sm">${t("examples.checkout.payment.paypal")}</span>
+                </label>
+              </div>
+            </div>
+
+            <button
+              onClick={handlePayment}
+              disabled={!paymentMethod || isProcessing}
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+            >
+              {isProcessing ? "${t("examples.checkout.processing")}" : "${t("examples.checkout.pay")}"}
+            </button>
+
+            <div className="text-center text-xs text-white50">
+              ${t("examples.checkout.secure.payment")} <span className="text-blue-400">reCAPTCHA</span>
+            </div>
+          </div>
+        </div>
+      </CustomContainer>
+
+      <CustomContainer className="px-6 py-3 max-w-[400px] lg:w-[350px] xl:w-[400px] space-y-4">
+        <div className="space-y-4">
+          <div className="flex items-center gap-4 justify-between">
+            <div className="flex items-center gap-2">
+              <div className="h-5 w-5 rounded-full bg-[#FF4444]"></div>
+              <div className="h-5 w-5 rounded-full bg-[#F4FF5C]"></div>
+              <div className="h-5 w-5 rounded-full bg-[#45FF42]"></div>
+            </div>
+          </div>
+
+          <h3 className="text-xl text-white70 font-bold">${t("examples.analytics.token.title")}</h3>
+          <div className="bg-black/30 rounded-lg p-3 min-h-[100px]">
+            <p className="text-white50 text-sm">
+              {console1 || "${t("examples.console.placeholder")}"}
+            </p>
+          </div>
+        </div>
+      </CustomContainer>
+    </section>
+  );
+}`;
+
+const codesExamples = [codeExample];
+---
+
+<section class="space-y-6 max-w-5xl">
+  <SubTitle title={t("examples.ecommerce-checkout")} />
+  <CustomContainer class="px-6 py-3 max-w-5xl">
+    <div class="flex items-center gap-4 justify-between mb-6">
+      <div class="flex items-center gap-2">
+        <div class="h-5 w-5 rounded-full bg-[#FF4444]"></div>
+        <div class="h-5 w-5 rounded-full bg-[#F4FF5C]"></div>
+        <div class="h-5 w-5 rounded-full bg-[#45FF42]"></div>
+      </div>
+      <button
+        type="button"
+        id="copyCodeBtn"
+        class="text-white50 hover:text-white70 cursor-pointer transition-colors"
+        title={t("ui.copy.code")}
+      >
+        <Icon name="mdi:content-copy" size={24} />
+      </button>
+    </div>
+    <Code
+      code={codeExample}
+      lang="tsx"
+      theme="dracula"
+      class="code-transparent"
+    />
+  </CustomContainer>
+</section>
+
+<script is:inline define:vars={{ codesExamples }}>
+  const copyBtn = document.getElementById("copyCodeBtn");
+
+  copyBtn?.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(codesExamples[0]);
+
+      // Feedback visual - Cambiar a icono de check
+      const originalInnerHTML = copyBtn.innerHTML;
+      copyBtn.innerHTML =
+        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg>';
+      copyBtn.classList.add("text-green-400");
+
+      setTimeout(() => {
+        copyBtn.innerHTML = originalInnerHTML;
+        copyBtn.classList.remove("text-green-400");
+      }, 2000);
+    } catch (err) {
+      console.error("Error al copiar:", err);
+
+      // Feedback de error
+      copyBtn.classList.add("text-red-400");
+      setTimeout(() => {
+        copyBtn.classList.remove("text-red-400");
+      }, 2000);
+    }
+  });
+</script>

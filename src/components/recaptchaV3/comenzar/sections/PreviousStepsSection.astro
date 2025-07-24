@@ -1,0 +1,30 @@
+---
+import { useTranslations } from "@/i18n/utils";
+
+interface Props {
+  lang?: "es" | "en" | "fr" | "it" | "pt" | "pt-BR" | "ja" | "ko";
+}
+
+const { lang = "es" } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section
+  class="font-normal text-base xl:text-lg 2xl:text-xl text-white50 max-w-5xl"
+>
+  <p>{t("start.prerequisites.keys")}</p>
+  <ul class="list-disc list-inside">
+    <li>
+      {t("start.prerequisites.register")}
+      <a
+        class="font-bold hover:underline"
+        href="https://www.google.com/recaptcha/admin"
+        rel="noopener noreferrer"
+        target="_blank">{t("start.prerequisites.console")}</a
+      >.
+    </li>
+    <li>
+      {t("start.prerequisites.type")}
+    </li>
+  </ul>
+</section>

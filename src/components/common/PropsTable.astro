@@ -1,0 +1,52 @@
+---
+import { Icon } from "astro-icon/components";
+
+export interface PropItem {
+  prop: string;
+  type: string;
+  required: boolean;
+  default?: string;
+  description: string;
+}
+
+export interface Props {
+  props: PropItem[];
+}
+
+const { props } = Astro.props;
+---
+
+<div class="w-full overflow-x-auto">
+  <table
+    class="w-full border-collapse bg-customBlack rounded-lg overflow-hidden"
+  >
+    <thead>
+      <tr class="bg-white/5 text-white70 text-sm font-semibold">
+        <th class="px-4 py-3 text-left"> Prop </th>
+        <th class="px-4 py-3 text-left"> Tipo </th>
+        <th class="px-4 py-3 text-left"> Requerido </th>
+        <th class="px-4 py-3 text-left"> Predeterminado </th>
+        <th class="px-4 py-3 text-left"> Descripción </th>
+      </tr>
+    </thead>
+    <tbody class="text-white50 text-xs font-normal">
+      {
+        props.map((item) => (
+          <tr class={`border-b border-gray-700 last:border-b-0`}>
+            <td class="px-4 py-3 ">{item.prop}</td>
+            <td class="px-4 py-3 ">{item.type}</td>
+            <td class="px-4 py-3">
+              {item.required ? (
+                <Icon name="mdi:checkbox-marked" size={16} color="#00FF00" />
+              ) : (
+                <Icon name="mdi:denied" size={16} color="#FF0000" />
+              )}
+            </td>
+            <td class="px-4 py-3 ">{item.default || "-"}</td>
+            <td class="px-4 py-3">{item.description}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

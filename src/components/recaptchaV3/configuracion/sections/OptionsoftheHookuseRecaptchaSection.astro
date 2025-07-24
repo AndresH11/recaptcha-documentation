@@ -1,0 +1,38 @@
+---
+import SubTitle from "@/components/common/SubTitle.astro";
+import Table from "@/components/common/table/Table.astro";
+import TableRow from "@/components/common/table/TableRow.astro";
+import { RECAPTCHA_V3_PROPS } from "@/constants/recaptchaV3/configurationPage/recaptchaV3Props";
+import { Icon } from "astro-icon/components";
+import { useTranslations } from "@/i18n/utils";
+
+interface Props {
+  lang?: "es" | "en" | "fr" | "it" | "pt" | "pt-BR" | "ja" | "ko";
+}
+
+const { lang = "es" } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="space-y-6 max-w-5xl">
+  <SubTitle title={t("config.hook.options")} />
+  <Table headers={["Opciones", "type", "required", "default", "description"]}>
+    {
+      RECAPTCHA_V3_PROPS.map((item) => (
+        <tr>
+          <TableRow>{item.prop}</TableRow>
+          <TableRow>{item.type}</TableRow>
+          <TableRow>
+            {item.required ? (
+              <Icon name="mdi:checkbox-marked" size={16} color="#00FF00" />
+            ) : (
+              <Icon name="mdi:denied" size={16} color="#FF0000" />
+            )}
+          </TableRow>
+          <TableRow>{item.default || "-"}</TableRow>
+          <TableRow>{item.description}</TableRow>
+        </tr>
+      ))
+    }
+  </Table>
+</section>

@@ -1,0 +1,56 @@
+export const RECAPTCHA_V3_PROPS = [
+  {
+    prop: "sitekey",
+    type: "string",
+    required: true,
+    description: "Tu Site Key de Google reCAPTCHA V3",
+  },
+  {
+    prop: "action",
+    type: "string",
+    required: true,
+    description: "Nombre de la acción (ej: 'login', 'page_view')",
+  },
+  {
+    prop: "hl",
+    type: "string",
+    required: false,
+    default: "undefined",
+    description: "Código de idioma (ej: 'es', 'en', 'fr')",
+  },
+  {
+    prop: "onVerify",
+    type: "(token:string)=>void",
+    required: false,
+    default: "undefined",
+    description: "Callback cuando se obtiene el token",
+  },
+  {
+    prop: "onError",
+    type: "(error:unknown)=>void",
+    required: false,
+    default: "undefined",
+    description: "Callback para manejo de errores",
+  },
+  {
+    prop: "trustedTypes",
+    type: "boolean",
+    required: false,
+    default: "false",
+    description: "Habilitar soporte para Trusted Types",
+  },
+  {
+    prop: "autoExecute",
+    type: "boolean",
+    required: false,
+    default: "false",
+    description: "Ejecutar automáticamente al montar",
+  },
+  {
+    prop: "timeout",
+    type: "number",
+    required: false,
+    default: "5000",
+    description: "Timeout para carga del script (ms)",
+  },
+];

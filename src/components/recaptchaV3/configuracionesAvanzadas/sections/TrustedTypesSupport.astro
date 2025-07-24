@@ -1,0 +1,98 @@
+---
+import CustomContainer from "@/components/common/CustomContainer.astro";
+import SubTitle from "@/components/common/SubTitle.astro";
+import { Icon } from "astro-icon/components";
+import { Code } from "astro:components";
+import { useTranslations } from "@/i18n/utils";
+
+interface Props {
+  lang?: "es" | "en" | "fr" | "it" | "pt" | "pt-BR" | "ja" | "ko";
+}
+
+const { lang = "es" } = Astro.props;
+const t = useTranslations(lang);
+
+const getCodeExample = (lang: string) => {
+  const codeTranslations = {
+    es: "//Para entornos con políticas de seguridad estrictas:",
+    en: "//For environments with strict security policies:",
+    fr: "//Pour les environnements avec des politiques de sécurité strictes:",
+    it: "//Per ambienti con politiche di sicurezza rigorose:",
+    pt: "//Para ambientes com políticas de segurança rigorosas:",
+    "pt-BR": "//Para ambientes com políticas de segurança rigorosas:",
+    ja: "//厳格なセキュリティポリシーを持つ環境用:",
+    ko: "//엄격한 보안 정책을 가진 환경용:",
+  };
+
+  const comment =
+    codeTranslations[lang as keyof typeof codeTranslations] ||
+    codeTranslations.es;
+
+  return `${comment}
+
+<ReCaptchaV3
+  siteKey="your-site-key"
+  action="secure_action"
+  trustedTypes={true}
+  onVerify={(token) => handleSecureAction(token)}
+/>;`;
+};
+
+const codeExample = getCodeExample(lang);
+---
+
+<section class="space-y-6 max-w-5xl">
+  <SubTitle title={t("advanced.trusted.types")} />
+  <CustomContainer class="px-6 py-3 max-w-5xl">
+    <div class="flex items-center gap-4 justify-between mb-6">
+      <div class="flex items-center gap-2">
+        <div class="h-5 w-5 rounded-full bg-[#FF4444]"></div>
+        <div class="h-5 w-5 rounded-full bg-[#F4FF5C]"></div>
+        <div class="h-5 w-5 rounded-full bg-[#45FF42]"></div>
+      </div>
+      <button
+        type="button"
+        id="copyCodeBtn"
+        class="text-white50 hover:text-white70 cursor-pointer transition-colors"
+        title={t("ui.copy.code")}
+      >
+        <Icon name="mdi:content-copy" size={24} />
+      </button>
+    </div>
+    <Code
+      code={codeExample}
+      lang="tsx"
+      theme="dracula"
+      class="code-transparent"
+    />
+  </CustomContainer>
+</section>
+
+<script is:inline define:vars={{ codeExample }}>
+  const copyBtn = document.getElementById("copyCodeBtn");
+
+  copyBtn?.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(codeExample);
+
+      // Feedback visual - Cambiar a icono de check
+      const originalInnerHTML = copyBtn.innerHTML;
+      copyBtn.innerHTML =
+        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg>';
+      copyBtn.classList.add("text-green-400");
+
+      setTimeout(() => {
+        copyBtn.innerHTML = originalInnerHTML;
+        copyBtn.classList.remove("text-green-400");
+      }, 2000);
+    } catch (err) {
+      console.error("Error al copiar:", err);
+
+      // Feedback de error
+      copyBtn.classList.add("text-red-400");
+      setTimeout(() => {
+        copyBtn.classList.remove("text-red-400");
+      }, 2000);
+    }
+  });
+</script>

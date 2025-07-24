@@ -1,0 +1,309 @@
+---
+import { Icon } from "astro-icon/components";
+import { getAsideNavItems } from "@/constants/asideNav/items";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const currentLang = getLangFromUrl(Astro.url);
+const t = useTranslations(currentLang);
+const asideNavItems = getAsideNavItems(currentLang);
+---
+
+<!-- Overlay para cerrar el menú en móviles -->
+<div
+  id="aside-nav-overlay"
+  class="fixed inset-0 bg-black/50 z-40 opacity-0 invisible lg:hidden transition-all duration-300"
+>
+</div>
+
+<aside
+  id="aside-nav"
+  class="fixed side-nav-content top-0 left-0 w-64 2xl:w-80 py-6 pl-6 pr-1 bg-customBlack text-white50 z-50 h-full transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out"
+>
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="text-white70 text-2xl 2xl:text-3xl font-bold">
+      Google React Recaptcha
+    </h1>
+    <!-- Botón para cerrar el menú en móviles -->
+    <button
+      id="close-aside-nav"
+      class="lg:hidden text-white50 hover:text-white70 p-2"
+      aria-label="Cerrar menú"
+    >
+      <Icon name="mdi:close" size={24} />
+    </button>
+  </div>
+
+  <div class="h-1 bg-customGray w-full mb-10"></div>
+
+  <nav
+    class="overflow-y-scroll h-[calc(100vh-13em)] scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-customBlack scrollbar-track-customGray"
+  >
+    <ul class="text-lg xl:text-xl 2xl:text-2xl space-y-5">
+      {
+        asideNavItems.map((item) => {
+          return !item.isDropdown ? (
+            <li accesskey={item.key}>
+              <a
+                class={`aside-nav-link ${
+                  item.isActive ? "hover:text-white70" : "text-white/10"
+                }`}
+                href={item.path}
+                data-path-key={item.key}
+              >
+                {t(item.titleKey as any)}
+              </a>
+            </li>
+          ) : (
+            <li
+              accesskey={item.key}
+              id={`${item.key}-container`}
+              class={`${!item.isActive ? "relative group/item" : null}`}
+            >
+              {!item.isActive && (
+                <div>
+                  <span class="absolute text-base transition-all duration-100 ease-in-out -top-10 left-0 w-fit bg-white/97 p-1 rounded-2xl text-customBlack font-bold invisible group-hover/item:visible z-20">
+                    Proximamente
+                  </span>
+                  <div class="transition-all duration-100 ease-in-out w-5 h-5 absolute -top-5 left-1/3 -translate-x-11/12 invisible group-hover/item:visible bg-white/97 transform rotate-45 z-10" />
+                </div>
+              )}
+              <button
+                id={item.key}
+                disabled={!item.isActive}
+                type="button"
+                class={`flex items-center gap-x-2 cursor-pointer mb-2 ${
+                  item.isActive
+                    ? "hover:text-white70 active:text-white70"
+                    : "text-white/10"
+                }`}
+              >
+                <p>{t(item.titleKey as any)}</p>
+                <Icon
+                  name="mdi:chevron-right"
+                  class="transition-transform duration-300"
+                  size={30}
+                />
+              </button>
+              <ul class="pl-3 text-sm xl:text-lg 2xl:text-xl space-y-2 opacity-0  max-h-0 overflow-hidden transition-all duration-300">
+                {item.children!.map((child) => (
+                  <li
+                    accesskey={child.key}
+                    class={`${!child.isActive ? "relative group/item" : null}`}
+                  >
+                    <a
+                      class={`aside-nav-link ${
+                        child.isActive
+                          ? "hover:text-white70"
+                          : "text-white/10 pointer-events-none"
+                      }`}
+                      href={child.path}
+                      data-path-key={child.key}
+                    >
+                      {t(child.titleKey as any)}
+                    </a>
+                    {!child.isActive && (
+                      <div>
+                        <span class="absolute text-base transition-all duration-100 ease-in-out -top-10 left-0 w-fit bg-white/97 p-1 rounded-2xl text-customBlack font-bold invisible group-hover/item:visible z-20">
+                          Proximamente
+                        </span>
+                        <div class="transition-all duration-100 ease-in-out w-5 h-5 absolute -top-5 left-1/3 -translate-x-11/12 invisible group-hover/item:visible bg-white/97 transform rotate-45 z-10" />
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </nav>
+
+  <a
+    href="https://www.linkedin.com/in/andresh11/"
+    rel="noopener noreferrer"
+    target="_blank"
+    class="flex items-center gap-x-1 mt-2 hover:underline"
+  >
+    <Icon name="mdi:linkedin" size={30} class="text-white50" />
+    <p class="text-lg 2xl:text-2xl font-bold">Andrés Hernández</p>
+  </a>
+</aside>
+
+<script>
+  // Función para obtener el idioma actual de la URL
+  function getCurrentLang() {
+    const path = window.location.pathname;
+    const segments = path.split("/").filter(Boolean);
+    const supportedLangs = ["en", "fr", "it", "pt", "pt-BR", "ja", "ko"];
+
+    if (segments.length > 0 && supportedLangs.includes(segments[0])) {
+      return segments[0];
+    }
+    return "es"; // idioma por defecto
+  }
+
+  // Función para obtener ruta localizada
+  function getLocalizedPath(lang: string, path: string) {
+    const cleanPath = path.startsWith("/") ? path.slice(1) : path;
+
+    if (lang === "es") {
+      return cleanPath ? `/${cleanPath}` : "/";
+    }
+
+    return cleanPath ? `/${lang}/${cleanPath}` : `/${lang}`;
+  }
+
+  // Función para actualizar las rutas de navegación
+  function updateNavigationPaths() {
+    const currentLang = getCurrentLang();
+
+    // Mapeo de rutas base
+    const routes: Record<string, string> = {
+      introduction: "",
+      start: "recaptchatV3/comenzar",
+      configuration: "recaptchatV3/configuracion",
+      "api-reference": "recaptchatV3/api-referencia",
+      "usage-examples": "recaptchatV3/ejemplos-de-usos",
+      "advanced-configurations": "recaptchatV3/configuraciones-avanzadas",
+      "error-handling": "recaptchatV3/manejo-de-errores",
+    };
+
+    // Actualizar todos los enlaces con data-path-key
+    document.querySelectorAll("a[data-path-key]").forEach((link) => {
+      const key = link.getAttribute("data-path-key");
+
+      if (key && routes[key] !== undefined) {
+        const basePath = routes[key];
+        const newPath = getLocalizedPath(currentLang, basePath);
+        link.setAttribute("href", newPath);
+      }
+    });
+  }
+
+  // Elementos para el menú responsive
+  const asideNav = document.getElementById("aside-nav");
+  const overlay = document.getElementById("aside-nav-overlay");
+  const closeButton = document.getElementById("close-aside-nav");
+  const navLinks = document.querySelectorAll(".aside-nav-link");
+
+  // Función para abrir el menú
+  function openAsideNav() {
+    asideNav?.classList.remove("-translate-x-full");
+    overlay?.classList.remove("opacity-0", "invisible");
+    overlay?.classList.add("opacity-100", "visible");
+    document.body.classList.add("overflow-hidden", "lg:overflow-auto");
+  }
+
+  // Función para cerrar el menú
+  function closeAsideNav() {
+    asideNav?.classList.add("-translate-x-full");
+    overlay?.classList.add("opacity-0", "invisible");
+    overlay?.classList.remove("opacity-100", "visible");
+    document.body.classList.remove("overflow-hidden");
+  }
+
+  // Event listeners para el menú responsive
+  closeButton?.addEventListener("click", closeAsideNav);
+  overlay?.addEventListener("click", closeAsideNav);
+
+  // Cerrar el menú cuando se hace clic en un enlace (solo en móviles)
+  navLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      if (window.innerWidth < 1024) {
+        // lg breakpoint
+        closeAsideNav();
+      }
+    });
+  });
+
+  // Cerrar el menú al cambiar el tamaño de la ventana a desktop
+  window.addEventListener("resize", () => {
+    if (window.innerWidth >= 1024) {
+      closeAsideNav();
+      document.body.classList.remove("overflow-hidden");
+    }
+  });
+
+  // Actualizar rutas cuando cambie la URL (navegación del lado del cliente)
+  let currentUrl = window.location.pathname;
+
+  // Escuchar eventos de navegación
+  window.addEventListener("popstate", updateNavigationPaths);
+  window.addEventListener("load", updateNavigationPaths);
+
+  // Actualizar al cargar la página
+  updateNavigationPaths();
+
+  // Hacer la función openAsideNav accesible globalmente
+  (window as any).openAsideNav = openAsideNav;
+
+  // Código existente para los dropdowns
+  //Optenemos lo elementos
+  const buttonRecaptchaV3 = document.getElementById(
+    "recaptcha-v3"
+  ) as HTMLButtonElement;
+  const buttonRecaptchaV2 = document.getElementById(
+    "recaptcha-v2"
+  ) as HTMLButtonElement;
+  const containerRecaptchaV3 = document.getElementById(
+    "recaptcha-v3-container"
+  ) as HTMLDivElement;
+  const containerRecaptchaV2 = document.getElementById(
+    "recaptcha-v2-container"
+  ) as HTMLDivElement;
+
+  // Agregamos el evento click al botón para el recaptcha-V3
+  buttonRecaptchaV3?.addEventListener("click", () => {
+    const icon = buttonRecaptchaV3.lastElementChild;
+    const ul = containerRecaptchaV3.querySelector("ul");
+
+    icon?.classList.toggle("rotate-90");
+
+    // Logíca para ocultar o mostrar el listado de items con una transición
+    const isCollapsed = ul?.classList.contains("max-h-0");
+
+    if (isCollapsed) {
+      // Mostrar: crecer la altura progresivamente
+      ul?.classList.remove("max-h-0");
+      ul?.classList.add("max-h-96");
+      ul?.classList.remove("opacity-0");
+      ul?.classList.add("opacity-100");
+      setTimeout(() => {
+        ul?.classList.remove("max-h-96");
+      }, 300);
+    } else {
+      // Ocultar: reducir la altura progresivamente
+      ul?.classList.add("opacity-0");
+      ul?.classList.remove("opacity-100");
+      ul?.classList.add("max-h-0");
+    }
+  });
+
+  // Agregamos el evento click al botón para el recaptcha-V2
+  buttonRecaptchaV2?.addEventListener("click", () => {
+    const icon = buttonRecaptchaV2.lastElementChild;
+    const ul = containerRecaptchaV2.querySelector("ul");
+
+    icon?.classList.toggle("rotate-90");
+
+    // Logíca para ocultar o mostrar el listado de items con una transición
+    const isCollapsed = ul?.classList.contains("max-h-0");
+
+    if (isCollapsed) {
+      // Mostrar: crecer la altura progresivamente
+      ul?.classList.remove("max-h-0");
+      ul?.classList.add("max-h-96");
+      ul?.classList.remove("opacity-0");
+      ul?.classList.add("opacity-100");
+      setTimeout(() => {
+        ul?.classList.remove("max-h-96");
+      }, 300);
+    } else {
+      // Ocultar: reducir la altura progresivamente
+      ul?.classList.add("opacity-0");
+      ul?.classList.remove("opacity-100");
+      ul?.classList.add("max-h-0");
+    }
+  });
+</script>

@@ -1,0 +1,230 @@
+---
+import CustomContainer from "@/components/common/CustomContainer.astro";
+import SubTitle from "@/components/common/SubTitle.astro";
+import { Icon } from "astro-icon/components";
+import { Code } from "astro:components";
+import { useTranslations } from "@/i18n/utils";
+
+interface Props {
+  lang?: "es" | "en" | "fr" | "it" | "pt" | "pt-BR" | "ja" | "ko";
+}
+
+const { lang = "es" } = Astro.props;
+const t = useTranslations(lang);
+
+const codeExample = `function RecaptchaWithRetry() {
+  const [retryCount, setRetryCount] = useState(0);
+  const [siteKey, setSiteKey] = useState('primary-site-key');
+
+  const handleError = (error: Error) => {
+    console.error('reCAPTCHA error:', error);
+
+    if (retryCount < 3) {
+      setTimeout(() => {
+        setRetryCount((prev) => prev + 1);
+        // ${t("errors.code.retry.count")}
+        if (retryCount === 2) {
+          setSiteKey('fallback-site-key');
+        }
+      }, 2000 * retryCount); // Backoff exponencial
+    } else {
+      // ${t("errors.code.retry.fallback")}
+      console.warn('${t("errors.code.retry.warn")}');
+    }
+  };
+
+  return (
+    <ReCaptchaV3
+      key={retryCount} // Forzar remount
+      siteKey={siteKey}
+      action="test_retry"
+      onError={handleError}
+    />
+  );
+}
+`;
+
+const codeExample2 = `function FormWithFallback() {
+  const [recaptchaFailed, setRecaptchaFailed] = useState(false);
+  const [showExtraValidation, setShowExtraValidation] = useState(false);
+
+  return (
+    <form>
+      {/* Campos del formulario */}
+
+      {recaptchaFailed && (
+        <div className="fallback-validation">
+          <p>${t("errors.code.fallback.validation")}</p>
+          <input
+            type="text"
+            placeholder="${t("errors.code.fallback.question")}"
+            onChange={(e) => setShowExtraValidation(e.target.value === '4')}
+          />
+        </div>
+      )}
+
+      <button type="submit" disabled={recaptchaFailed && !showExtraValidation}>
+        ${t("errors.code.fallback.send")}
+      </button>
+
+      {!recaptchaFailed && (
+        <ReCaptchaV3
+          siteKey="your-site-key"
+          action="form_submit"
+          onError={() => setRecaptchaFailed(true)}
+        />
+      )}
+    </form>
+  );
+}
+`;
+const codeExample3 = `function ErrorLogger() {
+  const logError = (error: Error, context: string) => {
+    // ${t("errors.code.logging.local")}
+    console.error("reCAPTCHA error:", error);
+
+    // ${t("errors.code.logging.service")}
+    fetch('/api/logs/error', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        error: error.message,
+        stack: error.stack,
+        context,
+        userAgent: navigator.userAgent,
+        timestamp: new Date().toISOString(),
+      }),
+    }).catch((logErr) => {
+      console.warn('${t("errors.code.logging.warn")}', logErr);
+    });
+  };
+
+  return (
+    <ReCaptchaV3
+      siteKey="your-site-key"
+      action="logged_action"
+      onError={(error) => logError(error as Error, 'recaptcha_execution')}
+    />
+  );
+}
+`;
+
+const codesExamples = [codeExample, codeExample2, codeExample3];
+---
+
+<section class="space-y-6 max-w-5xl">
+  <SubTitle title={t("errors.recovery.title")} />
+  <h3 class="text-white50 font-bold text-xs md:text-sm xl:text-lg 2xl:text-xl">
+    {t("errors.recovery.retry")}
+  </h3>
+  <CustomContainer class="px-6 py-3 max-w-5xl">
+    <div class="flex items-center gap-4 justify-between mb-6">
+      <div class="flex items-center gap-2">
+        <div class="h-5 w-5 rounded-full bg-[#FF4444]"></div>
+        <div class="h-5 w-5 rounded-full bg-[#F4FF5C]"></div>
+        <div class="h-5 w-5 rounded-full bg-[#45FF42]"></div>
+      </div>
+      <button
+        type="button"
+        id="copyCodeBtn4"
+        class="text-white50 hover:text-white70 cursor-pointer transition-colors"
+        title={t("ui.copy.code")}
+      >
+        <Icon name="mdi:content-copy" size={24} />
+      </button>
+    </div>
+    <Code
+      code={codeExample}
+      lang="tsx"
+      theme="dracula"
+      class="code-transparent"
+    />
+  </CustomContainer>
+  <h3 class="text-white50 font-bold text-xs md:text-sm xl:text-lg 2xl:text-xl">
+    {t("errors.recovery.fallback")}
+  </h3>
+  <CustomContainer class="px-6 py-3 max-w-5xl">
+    <div class="flex items-center gap-4 justify-between mb-6">
+      <div class="flex items-center gap-2">
+        <div class="h-5 w-5 rounded-full bg-[#FF4444]"></div>
+        <div class="h-5 w-5 rounded-full bg-[#F4FF5C]"></div>
+        <div class="h-5 w-5 rounded-full bg-[#45FF42]"></div>
+      </div>
+      <button
+        type="button"
+        id="copyCodeBtn5"
+        class="text-white50 hover:text-white70 cursor-pointer transition-colors"
+        title={t("ui.copy.code")}
+      >
+        <Icon name="mdi:content-copy" size={24} />
+      </button>
+    </div>
+    <Code
+      code={codeExample2}
+      lang="tsx"
+      theme="dracula"
+      class="code-transparent"
+    />
+  </CustomContainer>
+  <h3 class="text-white50 font-bold text-xs md:text-sm xl:text-lg 2xl:text-xl">
+    {t("errors.recovery.logging")}
+  </h3>
+  <CustomContainer class="px-6 py-3 max-w-5xl">
+    <div class="flex items-center gap-4 justify-between mb-6">
+      <div class="flex items-center gap-2">
+        <div class="h-5 w-5 rounded-full bg-[#FF4444]"></div>
+        <div class="h-5 w-5 rounded-full bg-[#F4FF5C]"></div>
+        <div class="h-5 w-5 rounded-full bg-[#45FF42]"></div>
+      </div>
+      <button
+        type="button"
+        id="copyCodeBtn6"
+        class="text-white50 hover:text-white70 cursor-pointer transition-colors"
+        title={t("ui.copy.code")}
+      >
+        <Icon name="mdi:content-copy" size={24} />
+      </button>
+    </div>
+    <Code
+      code={codeExample3}
+      lang="tsx"
+      theme="dracula"
+      class="code-transparent"
+    />
+  </CustomContainer>
+</section>
+
+<script is:inline define:vars={{ codesExamples }}>
+  const copyBtn4 = document.getElementById("copyCodeBtn4");
+  const copyBtn5 = document.getElementById("copyCodeBtn5");
+  const copyBtn6 = document.getElementById("copyCodeBtn6");
+
+  const btns = [copyBtn4, copyBtn5, copyBtn6];
+
+  for (let index = 0; index < btns.length; index++) {
+    btns[index]?.addEventListener("click", async (e) => {
+      try {
+        await navigator.clipboard.writeText(codesExamples[index]);
+
+        // Feedback visual - Cambiar a icono de check
+        const originalInnerHTML = btns[index].innerHTML;
+        btns[index].innerHTML =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg>';
+        btns[index].classList.add("text-green-400");
+
+        setTimeout(() => {
+          btns[index].innerHTML = originalInnerHTML;
+          btns[index].classList.remove("text-green-400");
+        }, 2000);
+      } catch (err) {
+        console.error("Error al copiar:", err);
+
+        // Feedback de error
+        btns[index].classList.add("text-red-400");
+        setTimeout(() => {
+          btns[index].classList.remove("text-red-400");
+        }, 2000);
+      }
+    });
+  }
+</script>

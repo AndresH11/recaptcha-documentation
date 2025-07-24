@@ -1,0 +1,108 @@
+---
+import { Icon } from "astro-icon/components";
+import { languages } from "@/i18n/ui";
+import {
+  getLangFromUrl,
+  getRouteFromUrl,
+  getLocalizedPath,
+} from "@/i18n/utils";
+
+const currentLang = getLangFromUrl(Astro.url);
+const currentRoute = getRouteFromUrl(Astro.url);
+const currentLanguageLabel = languages[currentLang];
+---
+
+<div class="relative">
+  <button
+    id="select-language-button"
+    type="button"
+    class="w-24 sm:w-28 md:w-32 h-[40px] md:h-[50px] hover:shadow shadow-customGray bg-customGray text-white50 hover:text-white70 text-sm sm:text-base lg:text-lg 2xl:text-xl flex items-center justify-center cursor-pointer rounded-xl gap-x-1"
+  >
+    <span class="truncate">{currentLanguageLabel}</span>
+    <Icon
+      id="select-language-arrow"
+      name="mdi:chevron-right"
+      size={24}
+      class="transition-transform duration-300 flex-shrink-0"
+    />
+  </button>
+  <div
+    id="select-language-menu"
+    class="text-white50 absolute top-full right-0 sm:left-0 w-full min-w-24 sm:min-w-28 md:min-w-32 opacity-0 invisible transition-all duration-300 transform -translate-y-5 z-50"
+  >
+    <div
+      class="w-5 h-5 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/12 bg-customBlack rotate-45 transition-opacity duration-300 opacity-0"
+    >
+    </div>
+    <div
+      class="text-sm sm:text-base lg:text-lg mt-2 w-full h-fit p-3 bg-customBlack rounded transition-opacity duration-300 opacity-0"
+    >
+      <ul class="space-y-1">
+        {
+          Object.entries(languages).map(([lang, label]) => (
+            <li class="hover:text-white70">
+              <a
+                href={getLocalizedPath(
+                  lang as keyof typeof languages,
+                  currentRoute
+                )}
+                class={`block py-1 ${currentLang === lang ? "text-white70 font-medium" : ""}`}
+              >
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  const selectLanguageButton = document.getElementById(
+    "select-language-button"
+  );
+  const selectLanguageMenu = document.getElementById("select-language-menu");
+  const selectLanguageArrow = document.getElementById("select-language-arrow");
+
+  selectLanguageButton?.addEventListener("click", () => {
+    selectLanguageMenu?.classList.toggle("opacity-0");
+    selectLanguageMenu?.classList.toggle("invisible");
+    selectLanguageMenu?.classList.toggle("translate-y-2");
+    selectLanguageMenu?.classList.toggle("-translate-y-2");
+
+    // Seleccionar los elementos internos para animarlos por separado
+    const arrow = selectLanguageMenu?.querySelector("div:first-child");
+    const menuContent = selectLanguageMenu?.querySelector("div:last-child");
+
+    arrow?.classList.toggle("opacity-0");
+    arrow?.classList.toggle("opacity-100");
+    menuContent?.classList.toggle("opacity-0");
+    menuContent?.classList.toggle("opacity-100");
+
+    // Rotamos el icono de flecha
+    selectLanguageArrow?.classList.toggle("rotate-90");
+  });
+
+  // Cerrar el menú al hacer clic fuera
+  document.addEventListener("click", (e) => {
+    if (
+      !selectLanguageButton?.contains(e.target as Node) &&
+      !selectLanguageMenu?.contains(e.target as Node)
+    ) {
+      selectLanguageMenu?.classList.add("opacity-0", "invisible");
+      selectLanguageMenu?.classList.remove("translate-y-2");
+      selectLanguageMenu?.classList.add("-translate-y-2");
+
+      const arrow = selectLanguageMenu?.querySelector("div:first-child");
+      const menuContent = selectLanguageMenu?.querySelector("div:last-child");
+
+      arrow?.classList.add("opacity-0");
+      arrow?.classList.remove("opacity-100");
+      menuContent?.classList.add("opacity-0");
+      menuContent?.classList.remove("opacity-100");
+
+      selectLanguageArrow?.classList.remove("rotate-90");
+    }
+  });
+</script>

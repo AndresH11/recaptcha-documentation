@@ -1,0 +1,41 @@
+---
+import { useTranslations } from "@/i18n/utils";
+
+interface Props {
+  lang?: "es" | "en" | "fr" | "it" | "pt" | "pt-BR" | "ja" | "ko";
+}
+
+const { lang = "es" } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="space-y-4 max-w-5xl">
+  <p class="text-base xl:text-lg 2xl:text-xl text-white50">
+    {t("start.description.main")}
+  </p>
+
+  <ul
+    class="text-white50 space-y-4 text-base xl:text-lg 2xl:text-xl list-decimal list-inside"
+  >
+    <li>
+      {t("start.description.scoring")}
+      <ul class="mt-2 ml-6 space-y-1 list-disc list-inside">
+        <li>*{t("start.description.scoring.suspicious")}</li>
+        <li>*{t("start.description.scoring.legitimate")}</li>
+      </ul>
+    </li>
+
+    <li>
+      {t("start.description.behavior")}
+    </li>
+
+    <li>
+      {t("start.description.ideal")}
+      <ul class="mt-2 ml-6 space-y-1 list-disc list-inside">
+        <li>*{t("start.description.ideal.forms")}</li>
+        <li>*{t("start.description.ideal.monitoring")}</li>
+        <li>*{t("start.description.ideal.actions")}</li>
+      </ul>
+    </li>
+  </ul>
+</section>

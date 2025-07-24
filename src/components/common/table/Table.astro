@@ -1,0 +1,26 @@
+---
+interface Props {
+  headers: string[];
+}
+
+const { headers } = Astro.props;
+---
+
+<section class="w-full overflow-x-auto">
+  <table
+    class="w-full border-collapse bg-customBlack rounded-lg overflow-hidden"
+  >
+    <thead>
+      <tr class="bg-white/5 text-white70 text-sm font-semibold">
+        {
+          headers.map((header) => (
+            <th class="px-4 py-3 text-left"> {header} </th>
+          ))
+        }
+      </tr>
+    </thead>
+    <tbody class="text-white50 text-xs font-normal">
+      <slot />
+    </tbody>
+  </table>
+</section>
