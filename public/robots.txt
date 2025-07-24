@@ -1,0 +1,36 @@
+User-agent: *
+Allow: /
+
+# Permitir acceso específico a Google
+User-agent: Googlebot
+Allow: /
+
+# Permitir acceso a Bing
+User-agent: Bingbot
+Allow: /
+
+# Bloquear archivos que no necesitan ser indexados
+Disallow: /api/
+Disallow: /_astro/
+Disallow: /node_modules/
+Disallow: /*.json
+Disallow: /package.json
+Disallow: /tsconfig.json
+Disallow: /astro.config.mjs
+Disallow: /pnpm-lock.yaml
+
+# Permitir específicamente los archivos de imágenes y CSS
+Allow: /favicon.svg
+Allow: /*.css
+Allow: /*.js
+Allow: /*.svg
+Allow: /*.png
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.webp
+
+# Referencia al sitemap
+Sitemap: https://andresh11.github.io/recaptcha-documentation/sitemap.xml
+
+# Tiempo de rastreo (opcional - ajustar según necesidades del servidor)
+Crawl-delay: 1 

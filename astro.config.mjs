@@ -30,5 +30,8 @@ export default defineConfig({
       prefixDefaultLocale: false,
       redirectToDefaultLocale: false
     }
-  }
+  },
+  site: 'https://andresh11.github.io',
+  base: 'recaptcha-documentation',
+  trailingSlash: 'always'
 });

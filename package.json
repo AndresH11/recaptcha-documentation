@@ -1,18 +1,19 @@
 {
-  "name": "",
+  "name": "Recaptcha-documentation",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "generate:sitemap": "node scripts/generate-sitemap.js"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "astro": "^5.10.1",
     "astro-icon": "^1.1.5",
-    "google-react-recaptcha-v3": "^2.0.0",
+    "google-react-recaptcha-v3": "^2.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "typescript": "^5.8.3"
