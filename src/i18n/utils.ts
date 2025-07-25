@@ -43,13 +43,22 @@ export function getLocalizedPath(lang: string, path: string): string {
   // Limpiar la ruta
   const cleanPath = path.startsWith("/") ? path.slice(1) : path;
 
-  // Para el idioma por defecto, no agregar prefijo
-  if (lang === defaultLang) {
-    return cleanPath ? `/${cleanPath}` : "/";
+  if (import.meta.env.DEV) {
+    // DESARROLLO: /en/path
+    if (lang === defaultLang) {
+      return cleanPath ? `/${cleanPath}` : "/";
+    }
+    return cleanPath ? `/${lang}/${cleanPath}` : `/${lang}`;
+  } else {
+    // PRODUCCIÓN: /recaptcha-documentation/en/path
+    const basePath = (import.meta.env.BASE_URL || "").replace(/\/$/, "");
+    if (lang === defaultLang) {
+      return cleanPath ? `${basePath}/${cleanPath}` : basePath || "/";
+    }
+    return cleanPath
+      ? `${basePath}/${lang}/${cleanPath}`
+      : `${basePath}/${lang}`;
   }
-
-  // Para otros idiomas, agregar el prefijo
-  return cleanPath ? `/${lang}/${cleanPath}` : `/${lang}`;
 }
 
 export function detectBrowserLanguage(): SupportedLanguage {

@@ -253,7 +253,7 @@ export function AnalyticsTrackerExample({ lang = "es" }: Props) {
   <SubTitle title={t("examples.analytics.title")} />
   <span class="flex justify-end">
     <a
-      href={import.meta.env.DEV
+      href={!import.meta.env.DEV
         ? "/recaptchatV3/ejemplos/analiticas-y-metricas"
         : `${import.meta.env.BASE_URL}/recaptchatV3/ejemplos/analiticas-y-metricas`}
       class="text-white50 hover:text-white70 text-end cursor-pointer transition-colors text-base font-bold underline"

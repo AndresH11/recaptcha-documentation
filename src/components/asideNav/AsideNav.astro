@@ -47,11 +47,6 @@ const asideNavItems = getAsideNavItems(currentLang);
                 class={`aside-nav-link ${
                   item.isActive ? "hover:text-white70" : "text-white/10"
                 }`}
-                href={
-                  import.meta.env.DEV
-                    ? item.path
-                    : `${import.meta.env.BASE_URL}${item.path}`
-                }
                 data-path-key={item.key}
               >
                 {t(item.titleKey as any)}
@@ -100,11 +95,6 @@ const asideNavItems = getAsideNavItems(currentLang);
                           ? "hover:text-white70"
                           : "text-white/10 pointer-events-none"
                       }`}
-                      href={
-                        import.meta.env.DEV
-                          ? child.path
-                          : `${import.meta.env.BASE_URL}${child.path}`
-                      }
                       data-path-key={child.key}
                     >
                       {t(child.titleKey as any)}
@@ -168,13 +158,25 @@ const asideNavItems = getAsideNavItems(currentLang);
 
     // Mapeo de rutas base
     const routes: Record<string, string> = {
-      introduction: "",
-      start: "recaptchatV3/comenzar",
-      configuration: "recaptchatV3/configuracion",
-      "api-reference": "recaptchatV3/api-referencia",
-      "usage-examples": "recaptchatV3/ejemplos-de-usos",
-      "advanced-configurations": "recaptchatV3/configuraciones-avanzadas",
-      "error-handling": "recaptchatV3/manejo-de-errores",
+      introduction: import.meta.env.DEV ? "" : `${import.meta.env.BASE_URL}`,
+      start: import.meta.env.DEV
+        ? "recaptchatV3/comenzar"
+        : `${import.meta.env.BASE_URL}/recaptchatV3/comenzar`,
+      configuration: import.meta.env.DEV
+        ? "recaptchatV3/configuracion"
+        : `${import.meta.env.BASE_URL}/recaptchatV3/configuracion`,
+      "api-reference": import.meta.env.DEV
+        ? "recaptchatV3/api-referencia"
+        : `${import.meta.env.BASE_URL}/recaptchatV3/api-referencia`,
+      "usage-examples": import.meta.env.DEV
+        ? "recaptchatV3/ejemplos-de-usos"
+        : `${import.meta.env.BASE_URL}/recaptchatV3/ejemplos-de-usos`,
+      "advanced-configurations": import.meta.env.DEV
+        ? "recaptchatV3/configuraciones-avanzadas"
+        : `${import.meta.env.BASE_URL}/recaptchatV3/configuraciones-avanzadas`,
+      "error-handling": import.meta.env.DEV
+        ? "recaptchatV3/manejo-de-errores"
+        : `${import.meta.env.BASE_URL}/recaptchatV3/manejo-de-errores`,
     };
 
     // Actualizar todos los enlaces con data-path-key
@@ -232,9 +234,6 @@ const asideNavItems = getAsideNavItems(currentLang);
       document.body.classList.remove("overflow-hidden");
     }
   });
-
-  // Actualizar rutas cuando cambie la URL (navegación del lado del cliente)
-  let currentUrl = window.location.pathname;
 
   // Escuchar eventos de navegación
   window.addEventListener("popstate", updateNavigationPaths);
