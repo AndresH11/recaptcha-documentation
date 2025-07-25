@@ -47,7 +47,11 @@ const asideNavItems = getAsideNavItems(currentLang);
                 class={`aside-nav-link ${
                   item.isActive ? "hover:text-white70" : "text-white/10"
                 }`}
-                href={item.path}
+                href={
+                  import.meta.env.DEV
+                    ? item.path
+                    : `${import.meta.env.BASE_URL}${item.path}`
+                }
                 data-path-key={item.key}
               >
                 {t(item.titleKey as any)}
@@ -96,7 +100,11 @@ const asideNavItems = getAsideNavItems(currentLang);
                           ? "hover:text-white70"
                           : "text-white/10 pointer-events-none"
                       }`}
-                      href={child.path}
+                      href={
+                        import.meta.env.DEV
+                          ? child.path
+                          : `${import.meta.env.BASE_URL}${child.path}`
+                      }
                       data-path-key={child.key}
                     >
                       {t(child.titleKey as any)}

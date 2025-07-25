@@ -95,7 +95,7 @@ export default function VisualExampleSection({ lang = "es" }: Props) {
           </div>
           <ReCaptchaV3
             ref={recaptchaRef}
-            siteKey="YOUR_SITE_KEY"
+            siteKey={import.meta.env.PUBLIC_RECAPCHAT_KEY}
             action={TRANSACTIONAL_ACTIONS.LOGIN} // ⚠️ Advertencia: no usar autoExecute // No es necesario usar TRANSACTIONAL_ACTIONS, puedes escribir la acción que quieras
             autoExecute={false} // Recomendado para acciones transaccionales
             onVerify={handleRecaptchaSuccess}

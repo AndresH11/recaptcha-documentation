@@ -161,7 +161,7 @@ export const ContactFormExample = ({ lang = "es" }: Props) => {
             {/* reCAPTCHA */}
             <ReCaptchaV3
               ref={recaptchaRef}
-              siteKey="YOUR_SITE_KEY"
+              siteKey={import.meta.env.PUBLIC_RECAPCHAT_KEY}
               action="contact_form"
               onError={(error) => console.error("reCAPTCHA error:", error)}
             />

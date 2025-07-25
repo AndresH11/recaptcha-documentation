@@ -194,7 +194,9 @@ const codesExamples = [codeExample];
   <SubTitle title={t("examples.ecommerce-checkout")} />
   <span class="flex justify-end">
     <a
-      href="/recaptchatV3/ejemplos/ecommerce-checkout"
+      href={import.meta.env.DEV
+        ? "/recaptchatV3/ejemplos/ecommerce-checkout"
+        : `${import.meta.env.BASE_URL}/recaptchatV3/ejemplos/ecommerce-checkout`}
       class="text-white50 hover:text-white70 text-end cursor-pointer transition-colors text-base font-bold underline"
     >
       {t("examples.demo.link")}

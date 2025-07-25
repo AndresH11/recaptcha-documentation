@@ -31,7 +31,7 @@ export default defineConfig({
       redirectToDefaultLocale: false
     }
   },
-  site: 'https://andresh11.github.io',
-  base: 'recaptcha-documentation',
-  trailingSlash: 'always'
+  site: import.meta.env.DEV ? 'http://localhost:4321' : 'https://andresh11.github.io',
+  base: import.meta.env.DEV ? '' : 'recaptcha-documentation',
+  trailingSlash: import.meta.env.DEV ? 'never' : 'always'
 });

@@ -19,7 +19,7 @@ export function AnalyticsTrackerExample({ lang = "es" }: Props) {
   });
 
   const { execute, isReady } = useReCaptcha({
-    siteKey: "YOUR_SITE_KEY",
+    siteKey: import.meta.env.PUBLIC_RECAPCHAT_KEY,
     action: "page_analytics",
     autoExecute: true, // Ejecutar automáticamente para analytics
     onVerify: async (token) => {

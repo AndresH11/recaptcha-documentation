@@ -176,7 +176,7 @@ export function CheckoutForm({ lang = "es" }: Props) {
 
           <ReCaptchaV3
             ref={recaptchaRef}
-            siteKey="YOUR_SITE_KEY"
+            siteKey={import.meta.env.PUBLIC_RECAPCHAT_KEY}
             action="checkout_payment"
             onError={(error) => {
               console.error("reCAPTCHA error:", error);
