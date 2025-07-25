@@ -27,7 +27,6 @@ concurrency:
 env:
   BUILD_PATH: "." # default value when not using subfolders
   # BUILD_PATH: subfolder
-  PUBLIC_RECAPCHAT_KEY: ${{ secrets.PUBLIC_RECAPCHAT_KEY }}
 
 jobs:
   build:
@@ -78,6 +77,8 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
         working-directory: ${{ env.BUILD_PATH }}
       - name: Build with Astro
+        env:
+          PUBLIC_RECAPCHAT_KEY: ${{ secrets.PUBLIC_RECAPCHAT_KEY }}
         run: |
           ${{ steps.detect-package-manager.outputs.runner }} astro build \
             --site "${{ steps.pages.outputs.origin }}" \
